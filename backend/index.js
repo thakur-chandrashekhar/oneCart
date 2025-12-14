@@ -34,8 +34,12 @@ app.use("/api/order",orderRoutes)
 
 
 
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
 
-    connectDb()
+connectDb()
+
 
 export default app  
 
