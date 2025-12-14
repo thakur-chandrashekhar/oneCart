@@ -1,11 +1,24 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { authDataContext } from './authContext'
+import { authDataContext } from './AuthContext'
 import axios from 'axios'
 
 export const userDataContext = createContext()
 function UserContext({children}) {
-    let [userData,setUserData] = useState("")
+    let [userData,setUserData] = useState(null)
     let {serverUrl} = useContext(authDataContext)
+
+    const logout = async () => {
+  try {
+    await axios.get(
+      serverUrl + "/api/auth/logout",
+      { withCredentials: true }
+    );
+
+    setUserData(null); // 🔥 UI yahin se update hogi
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 
    const getCurrentUser = async () => {
@@ -28,7 +41,7 @@ function UserContext({children}) {
 
 
     let value = {
-     userData,setUserData,getCurrentUser
+     userData,setUserData,getCurrentUser, logout
     }
     
    

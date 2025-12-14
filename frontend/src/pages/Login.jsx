@@ -6,12 +6,13 @@ import { IoEyeOutline } from "react-icons/io5";
 import { IoEye } from "react-icons/io5";
 import { useState } from 'react';
 import { useContext } from 'react';
-import { authDataContext } from '../context/authContext';
+import { authDataContext } from '../context/AuthContext';
 import axios from 'axios';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../../utils/Firebase';
 import { userDataContext } from '../context/UserContext';
 import Loading from '../component/Loading';
+import { toast } from "react-hot-toast";
 
 function Login() {
     let [show,setShow] = useState(false)
@@ -24,6 +25,8 @@ function Login() {
     let navigate = useNavigate()
 
     const handleLogin = async (e) => {
+        console.log("SERVER URL 👉", serverUrl + "/api/auth/login");
+
         setLoading(true)
         e.preventDefault()
         try {

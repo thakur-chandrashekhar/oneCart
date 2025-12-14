@@ -86,22 +86,42 @@ function Add() {
         <div className='w-[100%] h-[100%] flex items-center justify-start '>
           <label htmlFor="image1" className=' w-[65px] h-[65px] md:w-[100px] md:h-[100px] cursor-pointer hover:border-[#46d1f7]'>
             <img src={!image1 ? upload : URL.createObjectURL(image1)} alt="" className='w-[80%] h-[80%] rounded-lg shadow-2xl hover:border-[#1d1d1d] border-[2px]' />
-            <input type="file" id='image1' hidden onChange={(e)=>setImage1(e.target.files[0])} required />
+            <input
+  type="file"
+  id="image1"
+  hidden
+  onChange={(e) => setImage1(e.target.files[0])}
+/>
 
           </label>
           <label htmlFor="image2" className=' w-[65px] h-[65px] md:w-[100px] md:h-[100px] cursor-pointer hover:border-[#46d1f7]'>
             <img src={!image2 ? upload : URL.createObjectURL(image2)} alt="" className='w-[80%] h-[80%] rounded-lg shadow-2xl hover:border-[#1d1d1d] border-[2px]' />
-            <input type="file" id='image2' hidden onChange={(e)=>setImage2(e.target.files[0])} required />
+          <input
+  type="file"
+  id="image2"
+  hidden
+  onChange={(e) => setImage2(e.target.files[0])}
+/>
 
           </label>
           <label htmlFor="image3" className=' w-[65px] h-[65px] md:w-[100px] md:h-[100px] cursor-pointer hover:border-[#46d1f7]'>
             <img src={!image3 ? upload : URL.createObjectURL(image3)} alt="" className='w-[80%] h-[80%] rounded-lg shadow-2xl hover:border-[#1d1d1d] border-[2px]' />
-            <input type="file" id='image3' hidden onChange={(e)=>setImage3(e.target.files[0])} required />
+          <input
+  type="file"
+  id="image3"
+  hidden
+  onChange={(e) => setImage3(e.target.files[0])}
+/>
 
           </label>
           <label htmlFor="image4" className=' w-[65px] h-[65px] md:w-[100px] md:h-[100px] cursor-pointer hover:border-[#46d1f7]'>
             <img src={!image4 ? upload : URL.createObjectURL(image4)} alt="" className='w-[80%] h-[80%] rounded-lg shadow-2xl hover:border-[#1d1d1d] border-[2px]' />
-            <input type="file" id='image4' hidden onChange={(e)=>setImage4(e.target.files[0])} required/>
+          <input
+  type="file"
+  id="image4"
+  hidden
+  onChange={(e) => setImage4(e.target.files[0])}
+/>
 
           </label>
          

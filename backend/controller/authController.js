@@ -6,7 +6,8 @@ import { genToken, genToken1 } from "../config/token.js";
 
 export const registration = async (req,res) => {
   try {
-    const {name , email, password} = req.body;
+    let {name , email, password} = req.body;
+    email = email.toLowerCase();
     const existUser = await User.findOne({email})
     if(existUser){
         return res.status(400).json({message:"User already exist"})
@@ -24,12 +25,14 @@ export const registration = async (req,res) => {
     res.cookie("token",token,{
         httpOnly:true,
         secure:false,
-        sameSite: "Strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/"
     })
+    user.password = undefined;
     return res.status(201).json(user)
   } catch (error) {
-    console.log("registration error")
+    console.log("registration error", error)
     return res.status(500).json({message:`registration error ${error}`})
   }
     
@@ -39,9 +42,19 @@ export const registration = async (req,res) => {
 export const login = async (req,res) => {
     try {
         let {email,password} = req.body;
+        if(email) email = email.toLowerCase();
+        if(!email || !password){
+            return res.status(400).json({message:"Email and Password are required"})
+        }
+        if(!validator.isEmail(email)){
+            return res.status(400).json({message:"Please enter a valid Email address"})
+        }
         let user = await User.findOne({email}) 
         if(!user){
             return res.status(404).json({message:"User is not Found"})
+        }
+        if(!user.password){
+            return res.status(400).json({message:"Please login with Google"})
         }
         let isMatch = await bcrypt.compare(password,user.password)
         if(!isMatch){
@@ -51,33 +64,44 @@ export const login = async (req,res) => {
         res.cookie("token",token,{
         httpOnly:true,
         secure:false,
-        sameSite: "Strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/"
     })
-    return res.status(201).json(user)
+    user.password = undefined;
+    return res.status(200).json(user)
 
     } catch (error) {
-         console.log("login error")
+         console.log("login error", error)
     return res.status(500).json({message:`Login error ${error}`})
         
     }
     
 }
-export const logOut = async (req,res) => {
-try {
-    res.clearCookie("token")
-    return res.status(200).json({message:"logOut successful"})
-} catch (error) {
-    console.log("logOut error")
-    return res.status(500).json({message:`LogOut error ${error}`})
-}
-    
-}
+export const logOut = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.cookie("token", "", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+      expires: new Date(0)
+    });
+
+    return res.status(200).json({ message: "logOut successful" });
+  } catch (error) {
+    console.log("logOut error", error);
+    return res.status(500).json({ message: `LogOut error ${error}` });
+  }
+};
+
 
 
 export const googleLogin = async (req,res) => {
     try {
         let {name , email} = req.body;
+        email = email.toLowerCase();
          let user = await User.findOne({email}) 
         if(!user){
           user = await User.create({
@@ -89,9 +113,11 @@ export const googleLogin = async (req,res) => {
         res.cookie("token",token,{
         httpOnly:true,
         secure:false,
-        sameSite: "Strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/"
     })
+    if(user.password) user.password = undefined;
     return res.status(200).json(user)
 
     } catch (error) {
@@ -105,17 +131,19 @@ export const googleLogin = async (req,res) => {
 export const adminLogin = async (req,res) => {
     try {
         let {email , password} = req.body
+        if(email) email = email.toLowerCase();
         if(email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD){
         let token = await genToken1(email)
         res.cookie("token",token,{
         httpOnly:true,
         secure:false,
-        sameSite: "Strict",
-        maxAge: 1 * 24 * 60 * 60 * 1000
+        sameSite: "lax",
+        maxAge: 1 * 24 * 60 * 60 * 1000,
+        path: "/"
     })
     return res.status(200).json(token)
         }
-        return res.status(400).json({message:"Invaild creadintials"})
+        return res.status(400).json({message:"Invalid credentials"})
 
     } catch (error) {
         console.log("AdminLogin error")
@@ -124,4 +152,3 @@ export const adminLogin = async (req,res) => {
     }
     
 }
-

@@ -16,12 +16,14 @@ import Order from './pages/Order'
 import { ToastContainer } from 'react-toastify';
 import NotFound from './pages/NotFound'
 import Ai from './component/Ai'
+import { Toaster } from "react-hot-toast";
 function App() {
 let {userData} = useContext(userDataContext)
 let location = useLocation()
   
   return (
     <>
+     <Toaster />
     <ToastContainer />
     {userData && <Nav/>}
       <Routes>
