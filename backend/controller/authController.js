@@ -24,8 +24,8 @@ export const registration = async (req,res) => {
     let token = await genToken(user._id)
     res.cookie("token",token,{
         httpOnly:true,
-        secure:false,
-        sameSite: "lax",
+       secure: true,
+sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/"
     })
@@ -63,8 +63,8 @@ export const login = async (req,res) => {
         let token = await genToken(user._id)
         res.cookie("token",token,{
         httpOnly:true,
-        secure:false,
-        sameSite: "lax",
+    secure: true,
+sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/"
     })
@@ -83,8 +83,8 @@ export const logOut = async (req, res) => {
     res.clearCookie("token");
     res.cookie("token", "", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+    secure: true,
+sameSite: "none",
       path: "/",
       expires: new Date(0)
     });
@@ -112,8 +112,8 @@ export const googleLogin = async (req,res) => {
         let token = await genToken(user._id)
         res.cookie("token",token,{
         httpOnly:true,
-        secure:false,
-        sameSite: "lax",
+     secure: true,
+sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/"
     })
@@ -136,8 +136,8 @@ export const adminLogin = async (req,res) => {
         let token = await genToken1(email)
         res.cookie("token",token,{
         httpOnly:true,
-        secure:false,
-        sameSite: "lax",
+    secure: true,
+sameSite: "none",
         maxAge: 1 * 24 * 60 * 60 * 1000,
         path: "/"
     })
