@@ -15,6 +15,10 @@ let port = process.env.PORT || 4000
 let app = express()
 
 app.use(express.json())
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
 app.use(cookieParser())
 app.use(cors({
  origin:["http://localhost:5173" , "http://localhost:5174"],
