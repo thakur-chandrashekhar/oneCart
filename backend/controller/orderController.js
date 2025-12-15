@@ -66,8 +66,13 @@ export const placeOrderRazorpay = async (req, res) => {
       receipt: newOrder._id.toString(),
     };
 
-    const order = await razorpayInstance.orders.create(options);
-    res.status(200).json(order);
+    const razorpayOrder = await razorpayInstance.orders.create(options);
+    res.status(200).json({
+      razorpay_order_id: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      receipt: razorpayOrder.receipt,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
@@ -83,6 +88,8 @@ export const verifyRazorpay = async (req, res) => {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
+       receipt
+      
     } = req.body;
 
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
@@ -97,7 +104,7 @@ export const verifyRazorpay = async (req, res) => {
     }
 
     await Order.findByIdAndUpdate(
-      razorpay_order_id,
+     receipt,
       { payment: true },
       { new: true }
     );
