@@ -20,11 +20,13 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
  origin:["https://onecart-frontend-jesr.onrender.com" , "https://onecart-admin-tbxf.onrender.com"],
- credentials:true
+ credentials:true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }))
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
+app.options("*", cors());
 app.use("/api/auth",authRoutes)
 app.use("/api/user",userRoutes)
 app.use("/api/product",productRoutes)
