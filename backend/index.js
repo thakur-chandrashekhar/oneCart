@@ -19,7 +19,7 @@ app.use(express.json())
 
 app.use(cookieParser())
 app.use(cors({
- origin:["https://onecart-frontend-jesr.onrender.com/login" , "https://onecart-admin-tbxf.onrender.com"],
+ origin:["https://onecart-frontend-jesr.onrender.com" , "https://onecart-admin-tbxf.onrender.com"],
  credentials:true
 }))
 app.get("/", (req, res) => {
