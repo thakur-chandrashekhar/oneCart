@@ -98,34 +98,37 @@ sameSite: "none",
 
 
 
-export const googleLogin = async (req,res) => {
-    try {
-        let {name , email} = req.body;
-        email = email.toLowerCase();
-         let user = await User.findOne({email}) 
-        if(!user){
-          user = await User.create({
-            name,email
-        })
-        }
-       
-        let token = await genToken(user._id)
-        res.cookie("token",token,{
-        httpOnly:true,
-     secure: true,
-sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        path: "/"
-    })
-    if(user.password) user.password = undefined;
-    return res.status(200).json(user)
+export const googleLogin = async (req, res) => {
+  try {
+    let { name, email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email required" });
 
-    } catch (error) {
-         console.log("googleLogin error")
-    return res.status(500).json({message:`googleLogin error ${error}`})
+    email = email.toLowerCase();
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({ name, email });
     }
-    
-}
+
+    const token = await genToken(user._id);
+
+    const isProd = process.env.NODE_ENV === "production";
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    user.password = undefined;
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log("googleLogin error:", error);
+    return res.status(500).json({ message: `googleLogin error ${error.message}` });
+  }
+};
 
 
 export const adminLogin = async (req,res) => {
