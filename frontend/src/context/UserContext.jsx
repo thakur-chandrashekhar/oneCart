@@ -3,55 +3,57 @@ import { authDataContext } from './AuthContext'
 import axios from 'axios'
 
 export const userDataContext = createContext()
-function UserContext({children}) {
-    let [userData,setUserData] = useState(null)
-    let {serverUrl} = useContext(authDataContext)
 
-    const logout = async () => {
-  try {
-    await axios.get(
-      serverUrl + "/api/auth/logout",
-      { withCredentials: true }
-    );
+function UserContext({ children }) {
 
-    setUserData(null); // 🔥 UI yahin se update hogi
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const [userData, setUserData] = useState(null)
+  const { serverUrl } = useContext(authDataContext)
 
+  // 🔥 GET CURRENT USER (SAFE)
+  const getCurrentUser = async () => {
+    try {
+      const result = await axios.get(
+        serverUrl + "/api/user/getcurrentuser"
+      );
 
-   const getCurrentUser = async () => {
-        try {
-            let result = await axios.get(serverUrl + "/api/user/getcurrentuser",{withCredentials:true})
+      setUserData(result.data);
 
-            setUserData(result.data)
-            console.log(result.data)
-
-        } catch (error) {
-            setUserData(null)
-            console.log(error)
-        }
+    } catch (error) {
+      // ❗ sirf important error log karo
+      if (error.response?.status !== 401) {
+        console.log("GetUser Error:", error);
+      }
+      setUserData(null);
     }
+  };
 
-    useEffect(()=>{
-     getCurrentUser()
-    },[])
-
-
-
-    let value = {
-     userData,setUserData,getCurrentUser, logout
+  // 🔥 LOGOUT
+  const logout = async () => {
+    try {
+      await axios.get(serverUrl + "/api/auth/logout");
+      setUserData(null);
+    } catch (error) {
+      console.log("Logout Error:", error);
     }
-    
-   
+  };
+
+  // 🔥 INITIAL LOAD
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
+  const value = {
+    userData,
+    setUserData,
+    getCurrentUser,
+    logout
+  };
+
   return (
-    <div>
-      <userDataContext.Provider value={value}>
-        {children}
-      </userDataContext.Provider>
-    </div>
-  )
+    <userDataContext.Provider value={value}>
+      {children}
+    </userDataContext.Provider>
+  );
 }
 
-export default UserContext
+export default UserContext;
